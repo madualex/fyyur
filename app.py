@@ -116,7 +116,8 @@ def venues():
 
         list_of_venues = []
         for displayed_venue in displayed_venues:
-            upcoming_shows = len([Show.query.filter(Show.venue_id).filter(Show.start_time > datetime.now())])
+            upcoming_shows = len(db.session.query(Show).join(Venue).filter(Show.artist_id == Artist.id).filter(Show.start_time > datetime.now()).all())
+        
             list_of_venues.append({
                 "id": displayed_venue.id,
                 "name": displayed_venue.name,
@@ -126,7 +127,6 @@ def venues():
         joined_venue["venues"] = list_of_venues
         data.append(joined_venue)
     return render_template('pages/venues.html', areas=data);
-
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
     response={}
@@ -140,7 +140,7 @@ def search_venues():
         listed_venues = {
         "id": venue.id,
         "name": venue.name,
-        "num_upcoming_shows": len([Show.query.filter(Show.venue_id).filter(Show.start_time > datetime.now())])
+        "num_upcoming_shows": len(db.session.query(Show).join(Venue).filter(Show.artist_id == Artist.id).filter(Show.start_time > datetime.now()).all())
         }
         response["data"].append(listed_venues)
     
@@ -219,8 +219,6 @@ def create_venue_submission():
 def delete_venue(venue_id):
     try:
         venue = Venue.query.filter_by(id=venue_id).delete()
-        # venue = Venue.query.get(venue_id)
-        # db.session.delete(venue)
         db.session.commit()
         flash("Venue " + venue.name + " has been successfully deleted!")
     except Exception as error:
@@ -261,7 +259,7 @@ def search_artists():
         listed_artists = {
         "id": artist.id,
         "name": artist.name,
-        "num_upcoming_shows": len([db.session.query(Show).filter(Show.venue_id).filter(Show.start_time > datetime.now())])
+        "num_upcoming_shows": len(db.session.query(Show).join(Venue).filter(Show.artist_id == Artist.id).filter(Show.start_time > datetime.now()).all())
         }
         response['data'].append(listed_artists)
 
