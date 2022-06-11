@@ -17,4 +17,3 @@ DB_NAME = os.getenv('DB_NAME', 'postgres')
 DB_PATH = 'postgresql+psycopg2://{}:{}@{}/{}'.format('alexmadu, 242842, localhost:5432, postgres')
 
 SQLALCHEMY_DATABASE_URI = DB_PATH
-# SQLALCHEMY_DATABASE_URI = 'postgresql://alexmadu:242842@localhost:5432/postgres'
